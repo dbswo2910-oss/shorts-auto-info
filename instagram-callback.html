@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-iJg+ddhzsev9WuIbCHUnpikpNXoJI0g4POBYB3x0ARk='; style-src 'sha256-l/XgtKWvV7618IRnA6Ai+QKYNdwF/vYPcoVvojGGXXo='; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>shorts-auto · Instagram 연결 결과</title><style>body{font:17px/1.7 system-ui,sans-serif;max-width:680px;margin:12vh auto;padding:24px;color:#222;background:#f7f5ef}button{font:inherit;padding:12px 18px;cursor:pointer}small{display:block;margin-top:24px;color:#555}</style></head><body>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ZkzFRvPLfUTE2cQKD101Ki0gUHugSby4eIByQ2j0B+U='; style-src 'sha256-l/XgtKWvV7618IRnA6Ai+QKYNdwF/vYPcoVvojGGXXo='; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>shorts-auto · Instagram 연결 결과</title><style>body{font:17px/1.7 system-ui,sans-serif;max-width:680px;margin:12vh auto;padding:24px;color:#222;background:#f7f5ef}button{font:inherit;padding:12px 18px;cursor:pointer}small{display:block;margin-top:24px;color:#555}</style></head><body>
 <h1>Instagram 연결 결과</h1>
 <p id="status">연결 결과가 없습니다. PC의 shorts-auto 연결창에서 새 로그인을 시작하세요.</p>
-<button id="copy" disabled>연결 결과 복사</button>
+<label for="result">가려진 연결 결과</label><input id="result" type="password" readonly autocomplete="off" spellcheck="false" aria-label="가려진 연결 결과"><button id="copy" disabled>연결 결과 복사</button>
 <small>이 페이지는 비밀번호·앱 시크릿·액세스 토큰을 입력받지 않습니다. 별도 통신·분석·저장 기능이 없으며, 로그인 과정의 일회용 코드를 PC에서 확인하기 위한 화면입니다. 최종 계정·권한 검사는 PC에서 Meta API로 수행합니다.</small>
 <script>(() => {
   const params = new URLSearchParams(location.search);
@@ -12,10 +12,12 @@
   const state = params.get('state');
   const status = document.getElementById('status');
   const button = document.getElementById('copy');
+  const field = document.getElementById('result');
   if (params.has('error')) {
     status.textContent = 'Meta에서 연결이 완료되지 않았습니다. 기존 토큰은 변경되지 않았습니다.';
   } else if (code && state && code.length <= 16384 && /^[A-Za-z0-9_-]{40,128}$/.test(state)) {
     result = {code, state};
+    field.value = JSON.stringify(result);
     status.textContent = '연결 결과를 받았습니다. 아래 버튼으로 복사한 뒤 PC의 shorts-auto 연결창에 붙여넣으세요.';
     button.disabled = false;
   }
@@ -25,10 +27,11 @@
       await navigator.clipboard.writeText(JSON.stringify(result));
       status.textContent = '복사했습니다. 채팅이 아닌 PC의 가려진 입력창에 붙여넣으세요.';
       result = null;
+      field.value = '';
       button.disabled = true;
     } catch (_) {
       status.textContent = '클립보드 접근이 차단됐습니다. 브라우저 권한을 확인해 주세요. 코드는 화면에 표시하지 않습니다.';
     }
   });
-  setTimeout(() => { result = null; button.disabled = true; status.textContent = '이 화면의 연결 결과 보관 시간이 끝났습니다. 필요하면 PC에서 새 로그인을 시작하세요.'; }, 300000);
+  setTimeout(() => { result = null; field.value = ''; button.disabled = true; status.textContent = '이 화면의 연결 결과 보관 시간이 끝났습니다. 필요하면 PC에서 새 로그인을 시작하세요.'; }, 300000);
 })();</script></body></html>
